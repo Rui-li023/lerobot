@@ -1,3 +1,39 @@
+## Multi-GPU training
+
+### Overview
+
+This document provides instructions for multi-gpu training.
+
+### Modification Instructions
+
+1. Navigate to the following path in your environment:
+
+   ```
+   /your/path/envs/lerobot/lib/python3.10/site-packages/draccus/argparsing.py
+   ```
+
+2. Open the `argparsing.py` file and locate line 147.
+
+3. Add the following code snippet to handle the `local-rank` argument:
+
+   ```python
+   if 'local-rank' in parsed_arg_values:
+       parsed_arg_values['local_rank'] = parsed_arg_values.pop('local-rank')
+   ```
+
+### Training Example
+
+To train your model using the modified script, execute the following command, it is the same as origin code:
+
+```bash
+torchrun --nproc_per_node=4 lerobot/scripts/train_distributed.py --policy.type=pi0 --dataset.local_files_only=true --dataset.repo_id=so100_test --job_name=pi0_test --batch_size=16
+```
+
+### Inference Note
+
+When performing inference, ensure to remove the `local-rank` environment variable from the generated configuration. This step is crucial to avoid any issues during the inference process.
+
+
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="media/lerobot-logo-thumbnail.png">
